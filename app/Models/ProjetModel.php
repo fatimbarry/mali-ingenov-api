@@ -31,6 +31,12 @@ class ProjetModel extends Model
     ];
 
 
+    public function taches()
+    {
+        return $this->hasMany(TacheModel::class);
+    }
+
+
 
     use HasFactory;
 }

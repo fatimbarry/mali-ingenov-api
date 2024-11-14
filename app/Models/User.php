@@ -31,6 +31,16 @@ class User extends Authenticatable
 
     ];
 
+    public function punches()
+    {
+        return $this->hasMany(PointageModel::class);
+    }
+
+    public function postulations()
+    {
+        return $this->hasMany(PostulationModel::class);
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.

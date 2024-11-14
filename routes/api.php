@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\PointageController;
 use App\Http\Controllers\ProjetController;
+use App\Http\Controllers\TacheController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +44,18 @@ Route::middleware('api')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::put('/user/update-profile', [AuthController::class, 'updateProfile']);
+
+    Route::get('/admin/punches', [PointageController::class, 'adminIndex']);
+    Route::get('/punches', [PointageController::class, 'index']);
+    Route::post('/punch', [PointageController::class, 'store']);
+    Route::get('/punch-status/{employee}', [PointageController::class, 'getPunchStatus']);
+
+    Route::get('taches', [TacheController::class, 'index']);
+    Route::middleware(['auth:sanctum', 'chef_de_projet'])->group(function () {
+        Route::post('taches', [TacheController::class, 'store']);
+        Route::put('taches/{id}', [TacheController::class, 'update']);
+        Route::delete('taches/{id}', [TacheController::class, 'destroy']);
+    });
 
 
 
