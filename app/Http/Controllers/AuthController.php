@@ -22,33 +22,33 @@ class AuthController extends Controller
     public function store(LoginRequest $request)
     {
         try {
+            \Log::info('Login attempt', ['email' => $request->email]); // Debug log
+
             $credentials = $request->validated();
 
-            // Attempt to authenticate the user
             if (Auth::attempt($credentials)) {
-                // Get the authenticated user
                 $user = Auth::user();
+                $token = $user->createToken('token-name')->plainTextToken;
 
-                // Create an API token for the user
-                $token = $user->createToken('token-name', ['*'])->plainTextToken;
+                \Log::info('Login successful', ['user' => $user->id]); // Debug log
 
-                // Return JSON response
                 return response()->json([
-                    'message' => 'You are logged in.',
+                    'message' => 'Connexion réussie',
                     'user' => $user,
                     'token' => $token,
-                    'tokenExpiry' => now()->addMinutes(60)->format('Y-m-d H:i:s'),
                 ]);
             }
 
-            // Authentication failed
+            \Log::warning('Login failed: invalid credentials'); // Debug log
+
             return response()->json([
-                'message' => 'Credentials do not match our records.',
+                'message' => 'Identifiants incorrects',
             ], 401);
         } catch (\Exception $e) {
-            // Handle exceptions here
+            \Log::error('Login error', ['error' => $e->getMessage()]); // Debug log
+
             return response()->json([
-                'message' => 'Error during login: ' . $e->getMessage(),
+                'message' => 'Erreur lors de la connexion: ' . $e->getMessage(),
             ], 500);
         }
     }
