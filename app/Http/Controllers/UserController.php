@@ -17,12 +17,31 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::simplePaginate(2);
-            return response()->json(['success' => true, 'data' => $users]);
+            // Utiliser paginate directement sur la requête
+            $users = User::select('id', 'nom', 'prenom', 'photo', 'role', 'status')
+                ->paginate(8);
+
+            // Ajouter le chemin complet pour chaque photo
+            $users->getCollection()->transform(function ($user) {
+                if ($user->photo) {
+                    $user->photo = url('storage/' . $user->photo);
+                }
+                return $user;
+            });
+
+            return response()->json([
+                'success' => true,
+                'data' => $users
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
+
+
 
     public function store(Request $request)
     {

@@ -28,14 +28,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware('api')->group(function () {
     Route::post('/login', [AuthController::class,'store'])->name('auth.store');
-//    Route::controller(UserController::class)->group(function () {
-//        Route::get('/users', 'index');
-//        Route::post('/users/store', 'store');
-//        Route::get('/users/show/{id}', 'show');
-//        Route::put('/users/update/{id}', 'update');
-//        Route::delete('/users/delete/{id}', 'destroy');
-//        Route::get('/users/getuser', 'getUser');
-//    });
+    Route::get('/users', [UserController::class, 'index']);
+    Route::controller(UserController::class)->group(function () {
+        //Route::get('/users', 'index');
+        Route::post('/users/store', 'store');
+        Route::get('/users/show/{id}', 'show');
+        Route::put('/users/update/{id}', 'update');
+        Route::delete('/users/delete/{id}', 'destroy');
+        Route::get('/users/getuser', 'getUser');
+    });
 });
 
 
@@ -65,14 +66,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     });
 
-    Route::controller(UserController::class)->group(function () {
-        Route::get('/users', 'index');
-        Route::post('/users/store', 'store');
-        Route::get('/users/show/{id}', 'show');
-        Route::put('/users/update/{id}', 'update');
-        Route::delete('/users/delete/{id}', 'destroy');
-        Route::get('/users/getuser', 'getUser');
-    });
+//    Route::controller(UserController::class)->group(function () {
+//        Route::get('/users', 'index');
+//        Route::post('/users/store', 'store');
+//        Route::get('/users/show/{id}', 'show');
+//        Route::put('/users/update/{id}', 'update');
+//        Route::delete('/users/delete/{id}', 'destroy');
+//        Route::get('/users/getuser', 'getUser');
+//    });
 
     Route::controller(ClientController::class)->group(function () {
         Route::get('/clients',  'index');
