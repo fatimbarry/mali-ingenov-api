@@ -181,7 +181,9 @@ class UserController extends Controller
             'prenom' => $user->prenom,
             'nom' => $user->nom,
             'photo' => $user->photo,
-            'role' => $user->role
+            'role' => $user->role,
+            'email' =>$user->email,
+            'post' =>$user->post
         ]);
     }
 }

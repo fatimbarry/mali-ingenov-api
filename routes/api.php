@@ -24,32 +24,36 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
-
 Route::middleware('api')->group(function () {
     Route::post('/login', [AuthController::class,'store'])->name('auth.store');
     Route::get('/users', [UserController::class, 'index']);
+
+});
+
+Route::middleware('auth:sanctum')->group(function () {
     Route::controller(UserController::class)->group(function () {
         //Route::get('/users', 'index');
         Route::post('/users/store', 'store');
+        Route::get('/users/show/{id}', 'show');
         Route::get('/users/show/{id}', 'show');
         Route::put('/users/update/{id}', 'update');
         Route::delete('/users/delete/{id}', 'destroy');
         Route::get('/users/getuser', 'getUser');
     });
-});
 
 
-
-
-
-Route::middleware('auth:sanctum')->group(function () {
     Route::put('/user/update-profile', [AuthController::class, 'updateProfile']);
 
     Route::get('/admin/punches', [PointageController::class, 'adminIndex']);
     Route::get('/punches', [PointageController::class, 'index']);
     Route::post('/punch', [PointageController::class, 'store']);
     Route::get('/punch-status/{employee}', [PointageController::class, 'getPunchStatus']);
+
+    //Route::post('/pointage', [PointageController::class, 'toggleStatus']);
+   //Route::get('/pointage/status', [PointageController::class, 'getStatus']);
+
+    Route::get('/pointages/{id}/status', [PointageController::class, 'getStatus']);
+    Route::put('/pointages/{id}/toggle-status', [PointageController::class, 'toggleStatus']);
 
     Route::get('taches', [TacheController::class, 'index']);
     Route::middleware(['auth:sanctum', 'chef_de_projet'])->group(function () {

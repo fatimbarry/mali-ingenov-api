@@ -19,6 +19,18 @@ class PointageModel extends Model
         'ecart'
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($pointage) {
+            if (is_null($pointage->punch_out)) {
+                $pointage->punch_out = '00:00:00'; // ou null selon votre choix
+            }
+        });
+    }
+
+
     public function employee()
     {
         return $this->belongsTo(User::class);

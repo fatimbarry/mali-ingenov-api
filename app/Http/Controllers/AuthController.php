@@ -22,7 +22,7 @@ class AuthController extends Controller
     public function store(LoginRequest $request)
     {
         try {
-            \Log::info('Login attempt', ['email' => $request->email]); // Debug log
+            \Log::info('Login attempt', ['email' => $request->email]);
 
             $credentials = $request->validated();
 
@@ -30,28 +30,36 @@ class AuthController extends Controller
                 $user = Auth::user();
                 $token = $user->createToken('token-name')->plainTextToken;
 
-                \Log::info('Login successful', ['user' => $user->id]); // Debug log
+                \Log::info('Login successful', ['user' => $user->id]);
 
                 return response()->json([
                     'message' => 'Connexion réussie',
-                    'user' => $user,
+                    'user' => [
+                        'id' => $user->id,
+                        'full_name' => $user->prenom . ' ' . $user->nom,
+                        'email' => $user->email,
+                        'role'=> $user->role,
+                        'post'=> $user->post,
+
+                    ],
                     'token' => $token,
                 ]);
             }
 
-            \Log::warning('Login failed: invalid credentials'); // Debug log
+            \Log::warning('Login failed: invalid credentials');
 
             return response()->json([
                 'message' => 'Identifiants incorrects',
             ], 401);
         } catch (\Exception $e) {
-            \Log::error('Login error', ['error' => $e->getMessage()]); // Debug log
+            \Log::error('Login error', ['error' => $e->getMessage()]);
 
             return response()->json([
                 'message' => 'Erreur lors de la connexion: ' . $e->getMessage(),
             ], 500);
         }
     }
+
 
     public function updateProfile(Request $request): JsonResponse
     {

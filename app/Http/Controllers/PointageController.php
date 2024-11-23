@@ -2,11 +2,56 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PointageModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class PointageController extends Controller
 {
+
+   // Basculer le statut d'un employé (absent -> présent ou présent -> absent)
+    public function toggleStatus($id)
+    {
+        \Log::info('Requête reçue pour l’utilisateur : ' . $id);
+
+        $pointage = PointageModel::firstOrCreate(
+            ['users_id' => $id, 'date' => today()],
+            ['status' => 'absent', 'punch_in' => now()]
+        );
+
+        \Log::info('Statut actuel avant modification : ' . $pointage->status);
+
+        if ($pointage->status === 'absent') {
+            $pointage->status = 'present';
+            $pointage->punch_in = now();
+        } else {
+            $pointage->punch_out = now();
+            $pointage->status = 'absent';
+        }
+
+        $pointage->save();
+
+        \Log::info('Statut mis à jour : ' . $pointage->status);
+
+        return response()->json([
+            'status' => $pointage->status,
+            'punch_in' => $pointage->punch_in,
+            'punch_out' => $pointage->punch_out,
+        ], 200);
+    }
+
+
+    // Récupérer le statut actuel d'un employé pour aujourd'hui
+    public function getStatus($id)
+    {
+        $pointage = PointageModel::where('users_id', $id)->whereDate('date', today())->first();
+
+        if (!$pointage) {
+            return response()->json(['status' => 'absent'], 200);
+        }
+
+        return response()->json(['status' => $pointage->status], 200);
+    }
     public function index(Request $request)
     {
         try {
