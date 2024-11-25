@@ -14,24 +14,85 @@ use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
+//   public function index(Request $request)
+//{
+//    try {
+//        // Récupérer les paramètres de la requête
+//        $perPage = $request->input('per_page', 8);
+//        $search = $request->input('search', '');
+//
+//        // Construire la requête de base
+//        $query = User::select('id', 'nom', 'prenom', 'photo', 'role', 'status');
+//
+//        // Ajouter la recherche si un terme est fourni
+//        if ($search) {
+//            $query->where(function($q) use ($search) {
+//                $q->where('nom', 'like', "%{$search}%")
+//                  ->orWhere('prenom', 'like', "%{$search}%")
+//                  ->orWhere('role', 'like', "%{$search}%");
+//            });
+//        }
+//
+//        // Exécuter la pagination
+//        $users = $query->paginate($perPage);
+//
+//        // Transformer les URLs des photos
+//        $users->getCollection()->transform(function ($user) {
+//            if ($user->photo) {
+//                $user->photo = url('storage/' . $user->photo);
+//            }
+//
+//            // Concaténer nom et prénom pour l'affichage
+//            $user->full_name = $user->nom . ' ' . $user->prenom;
+//
+//            return $user;
+//        });
+//
+//        // Retourner la réponse avec toutes les informations de pagination
+//        return response()->json([
+//            'success' => true,
+//            'data' => $users->items(),
+//            'pagination' => [
+//                'total' => $users->total(),
+//                'per_page' => $users->perPage(),
+//                'current_page' => $users->currentPage(),
+//                'last_page' => $users->lastPage(),
+//                'from' => $users->firstItem(),
+//                'to' => $users->lastItem()
+//            ]
+//        ]);
+//
+//    } catch (\Exception $e) {
+//        return response()->json([
+//            'success' => false,
+//            'message' => 'Une erreur est survenue lors de la récupération des utilisateurs',
+//            'error' => $e->getMessage()
+//        ], 500);
+//    }
+//}
+
     public function index()
     {
         try {
-            // Utiliser paginate directement sur la requête
-            $users = User::select('id', 'nom', 'prenom', 'photo', 'role', 'status')
+            $users = User::select('id', 'nom', 'prenom', 'photo', 'role', 'status', 'email', 'post', 'date_Emb', 'department_id')
+                ->with('department:id,nom') // Chargez la relation department
                 ->paginate(8);
 
-            // Ajouter le chemin complet pour chaque photo
             $users->getCollection()->transform(function ($user) {
                 if ($user->photo) {
                     $user->photo = url('storage/' . $user->photo);
                 }
+
+                if ($user->department) {
+                    $user->department = $user->department->nom; // Ajout du nom du département
+                }
+                $user->date_Emb = $user->date_Emb ? date('Y-m-d', strtotime($user->date_Emb)) : null;
                 return $user;
             });
-
             return response()->json([
                 'success' => true,
                 'data' => $users
+
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -40,8 +101,6 @@ class UserController extends Controller
             ], 500);
         }
     }
-
-
 
     public function store(Request $request)
     {
@@ -186,4 +245,20 @@ class UserController extends Controller
             'post' =>$user->post
         ]);
     }
+
+//public function index(Request $request)
+//{
+//    $perPage = $request->input('per_page', 10);
+//    $search = $request->input('search', '');
+//
+//    $query = User::query();
+//
+//    if ($search) {
+//        $query->where('nom', 'like', "%{$search}%")
+//              ->orWhere('email', 'like', "%{$search}%");
+//
+//    }
+//
+//    return $query->paginate($perPage);
+//}
 }
