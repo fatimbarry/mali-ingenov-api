@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\PointageController;
 use App\Http\Controllers\ProjetController;
 use App\Http\Controllers\TacheController;
@@ -31,6 +32,7 @@ Route::middleware('api')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/departements/index', [DepartementController::class, 'index']);
     Route::controller(UserController::class)->group(function () {
         //Route::get('/users', 'index');
         Route::post('/users/store', 'store');
@@ -40,6 +42,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/users/delete/{id}', 'destroy');
         Route::get('/users/getuser', 'getUser');
     });
+
+    Route::get('/roles', [UserController::class, 'getRole']);
+
 
 
     Route::put('/user/update-profile', [AuthController::class, 'updateProfile']);
@@ -51,6 +56,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Route::post('/pointage', [PointageController::class, 'toggleStatus']);
    //Route::get('/pointage/status', [PointageController::class, 'getStatus']);
+
+
+    Route::post('/departements/store', [DepartementController::class, 'store']);
+    Route::get('/departements/show/{id}', [DepartementController::class, 'show']);
+    Route::put('/departements/update/{id}', [DepartementController::class, 'update']);
+    Route::delete('/departements/{id}', [DepartementController::class, 'destroy']);
 
     Route::get('/pointages/{id}/status', [PointageController::class, 'getStatus']);
     Route::put('/pointages/{id}/toggle-status', [PointageController::class, 'toggleStatus']);

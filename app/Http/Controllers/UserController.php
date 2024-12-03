@@ -102,6 +102,23 @@ class UserController extends Controller
         }
     }
 
+    public function getRole()
+    {
+        // Obtenir la colonne 'role' de la table 'users'
+        $rolesColumn = \DB::select('SHOW COLUMNS FROM users WHERE Field = ?', ['role'])[0]->Type;
+
+        // Extraire les valeurs enum
+        preg_match('/^enum\((.*)\)$/', $rolesColumn, $matches);
+
+        $enumValues = array_map(function ($value) {
+            return trim($value, "'");
+        }, explode(',', $matches[1]));
+
+        // Retourner les valeurs enum comme réponse JSON
+        return response()->json($enumValues, 200);
+    }
+
+
     public function store(Request $request)
     {
         try {

@@ -15,9 +15,10 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients = ClientModel::all();
+        $clients = ClientModel::with('projets')->get();
         return response()->json($clients);
     }
+
 
     /**
      * Enregistrer un nouveau client.

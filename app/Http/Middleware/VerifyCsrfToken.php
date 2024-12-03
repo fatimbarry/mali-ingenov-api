@@ -13,5 +13,9 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'api/pointages/*/toggle-status',
+        'api/users/delete/*',
+        '/users/store',
+        'api/projets/store',
+        'api/projets/update/*',
     ];
 }
