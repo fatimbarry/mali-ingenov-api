@@ -256,10 +256,11 @@ class UserController extends Controller
         return response()->json([
             'prenom' => $user->prenom,
             'nom' => $user->nom,
-            'photo' => $user->photo,
+            'photo' => $user->photo ? url('storage/' . $user->photo) : null,
             'role' => $user->role,
             'email' =>$user->email,
-            'post' =>$user->post
+            'post' =>$user->post,
+
         ]);
     }
 
