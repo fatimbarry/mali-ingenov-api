@@ -33,7 +33,7 @@ class PointageModel extends Model
 
     public function employee()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'users_id');
     }
 
     use HasFactory;

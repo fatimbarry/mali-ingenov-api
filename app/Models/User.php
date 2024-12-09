@@ -38,7 +38,7 @@ class User extends Authenticatable
 
     public function punches()
     {
-        return $this->hasMany(PointageModel::class);
+        return $this->hasMany(PointageModel::class, 'users_id'); // Colonne correcte dans la table pointages
     }
 
     public function postulations()

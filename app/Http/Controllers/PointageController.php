@@ -60,29 +60,37 @@ class PointageController extends Controller
             // Pagination optionnelle (par défaut 10 entrées par page)
             $perPage = $request->get('per_page', 10);
 
+            // Récupérer les pointages
             $punches = $employee->punches()
                 ->orderBy('punch_in', 'desc')
                 ->paginate($perPage);
 
             // Transformer les données pour inclure des formats de date lisibles
-            $formattedPunches = $punches->map(function ($punch) {
+            $formattedPunches = $punches->getCollection()->map(function ($punch) {
+                // Convertir punch_in et punch_out en objets Carbon
+                $punchIn = $punch->punch_in ? \Carbon\Carbon::parse($punch->punch_in) : null;
+                $punchOut = $punch->punch_out ? \Carbon\Carbon::parse($punch->punch_out) : null;
+
                 return [
                     'id' => $punch->id,
-                    'punch_in' => [
-                        'datetime' => $punch->punch_in,
-                        'formatted' => $punch->punch_in->format('d/m/Y H:i:s'),
-                    ],
-                    'punch_out' => $punch->punch_out ? [
-                        'datetime' => $punch->punch_out,
-                        'formatted' => $punch->punch_out->format('d/m/Y H:i:s'),
+                    'punch_in' => $punchIn ? [
+                        'datetime' => $punchIn->toDateTimeString(),
+                        'formatted' => $punchIn->format('d/m/Y H:i:s'),
+                    ] : null,
+                    'punch_out' => $punchOut ? [
+                        'datetime' => $punchOut->toDateTimeString(),
+                        'formatted' => $punchOut->format('d/m/Y H:i:s'),
                     ] : null,
                     'status' => $punch->status,
                     // Calculer la durée si punch_out existe
-                    'duration' => $punch->punch_out
-                        ? $punch->punch_in->diffForHumans($punch->punch_out, true)
+                    'duration' => $punchOut
+                        ? $punchIn->diffForHumans($punchOut, true)
                         : null,
                 ];
             });
+
+            // Mettre à jour les données paginées
+            $punches->setCollection($formattedPunches);
 
             return response()->json([
                 'status' => 'success',
@@ -91,7 +99,7 @@ class PointageController extends Controller
                         'id' => $employee->id,
                         'name' => $employee->name,
                     ],
-                    'punches' => $formattedPunches,
+                    'punches' => $punches->items(),
                     'pagination' => [
                         'total' => $punches->total(),
                         'per_page' => $punches->perPage(),
@@ -111,6 +119,7 @@ class PointageController extends Controller
             ], 500);
         }
     }
+
 
     public function store(Request $request)
     {
