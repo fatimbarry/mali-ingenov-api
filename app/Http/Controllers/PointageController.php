@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PointageModel;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class PointageController extends Controller
 {
@@ -83,8 +84,8 @@ class PointageController extends Controller
                     ] : null,
                     'status' => $punch->status,
                     // Calculer la durée si punch_out existe
-                    'duration' => $punchOut
-                        ? $punchIn->diffForHumans($punchOut, true)
+                    'duration' => $punch->punch_out
+                        ? Carbon::parse($punch->punch_in)->diffForHumans(Carbon::parse($punch->punch_out), true)
                         : null,
                 ];
             });
@@ -97,7 +98,7 @@ class PointageController extends Controller
                 'data' => [
                     'employee' => [
                         'id' => $employee->id,
-                        'name' => $employee->name,
+                        'full_name' => $employee->prenom . ' ' . $employee->nom,
                     ],
                     'punches' => $punches->items(),
                     'pagination' => [

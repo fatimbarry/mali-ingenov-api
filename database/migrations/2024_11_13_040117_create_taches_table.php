@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('titre'); // Titre de la tâche
             $table->text('description')->nullable(); // Description détaillée de la tâche
             $table->time('temps_previs')->nullable(); // Temps prévu pour accomplir la tâche
-            $table->enum('status', ['en cours', 'terminé', 'validé'])->default('en cours');
+            $table->enum('status', ['en cours', 'terminé', 'validé', 'A faire'])->default('A faire');
             $table->foreignId('projet_id')->constrained('projets')->onDelete('cascade'); // Clé étrangère vers la table projets
             $table->timestamps(); // Champs created_at et updated_at
         });

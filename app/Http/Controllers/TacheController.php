@@ -17,6 +17,11 @@ class TacheController extends Controller
     // Méthode pour créer une nouvelle tâche
     public function store(Request $request)
     {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Utilisateur non authentifié.'], 401);
+        }
         // Vérification du rôle de l'utilisateur
         if (Auth::user()->role !== 'Chef_de_projet') {
             return response()->json(['error' => 'Vous n\'êtes pas autorisé à créer des tâches.'], 403);

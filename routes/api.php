@@ -68,8 +68,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/pointages/{id}/toggle-status', [PointageController::class, 'toggleStatus']);
 
     Route::get('taches', [TacheController::class, 'index']);
-    Route::middleware(['auth:sanctum', 'chef_de_projet'])->group(function () {
-        Route::post('taches', [TacheController::class, 'store']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('taches-store', [TacheController::class, 'store']);
         Route::put('taches/{id}', [TacheController::class, 'update']);
         Route::delete('taches/{id}', [TacheController::class, 'destroy']);
     });
