@@ -31,7 +31,7 @@ class TacheController extends Controller
             'titre' => 'required|string|max:255',
             'description' => 'nullable|string',
             'temps_previs' => 'nullable|date_format:H:i:s',
-            'status' => 'in:en cours,terminé,validé',
+            'status' => 'in:en cours,terminé,validé,A faire',
             'projet_id' => 'required|exists:projets,id',
         ]);
 
@@ -64,6 +64,11 @@ class TacheController extends Controller
     // Méthode pour supprimer une tâche
     public function destroy($id)
     {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Utilisateur non authentifié.'], 401);
+        }
         // Vérification du rôle de l'utilisateur
         if (Auth::user()->role !== 'Chef_de_projet') {
             return response()->json(['error' => 'Vous n\'êtes pas autorisé à supprimer des tâches.'], 403);
