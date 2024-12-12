@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ContratController;
 use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\PointageController;
 use App\Http\Controllers\ProjetController;
@@ -43,6 +44,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/users/delete/{id}', 'destroy');
         Route::get('/users/getuser', 'getUser');
     });
+
+
+    Route::controller(ContratController::class)->group(function () {
+        Route::get('/contracts', 'index');
+        Route::post('/contracts-store', 'store');
+        Route::get('/contracts/{id}', 'show');
+        Route::put('/contracts/update/{id}', 'update');
+        Route::delete('/contracts/destroy/{id}', 'destroy');
+    });
+
 
     Route::get('/roles', [UserController::class, 'getRole']);
 

@@ -21,6 +21,12 @@ class ProjetModel extends Model
 
     ];
 
+    // Relation avec le modèle Contract
+    public function contracts()
+    {
+        return $this->hasMany(Contrat::class);
+    }
+
     public function client()
     {
         return $this->belongsTo(ClientModel::class, 'client_id');
