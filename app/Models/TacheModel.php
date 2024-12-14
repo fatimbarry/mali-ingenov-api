@@ -14,11 +14,24 @@ class TacheModel extends Model
         'temps_previs',
         'status',
         'projet_id',
+        'assigned_to',
+        'assigned_by',
+        'due_date',
     ];
 
     public function projet()
     {
         return $this->belongsTo(ProjetModel::class);
+    }
+
+    public function assignedTo()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function assignedBy()
+    {
+        return $this->belongsTo(User::class, 'assigned_by');
     }
 
     public function postulations()

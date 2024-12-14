@@ -39,7 +39,7 @@ class ProjetModel extends Model
 
     public function taches()
     {
-        return $this->hasMany(TacheModel::class);
+        return $this->hasMany(TacheModel::class, 'projet_id', 'id');
     }
 
 

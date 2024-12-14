@@ -50,12 +50,19 @@ class ProjetController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
+     *
      */
     public function show($id)
     {
-        $projet = ProjetModel::with('client')->find($id);
+        $projet = ProjetModel::with(['client', 'taches'])->find($id);
+
+        if (!$projet) {
+            return response()->json(['message' => 'Projet non trouvé'], 404);
+        }
+
         return response()->json($projet);
     }
+
 
     /**
      * Update the specified project in storage.

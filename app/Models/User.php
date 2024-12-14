@@ -28,6 +28,8 @@ class User extends Authenticatable
         'role',
         'post',
         'department_id',
+        'assigned_to',
+        'assigned_by',
 
     ];
 

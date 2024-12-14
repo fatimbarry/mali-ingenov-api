@@ -83,6 +83,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('taches-store', [TacheController::class, 'store']);
         Route::put('taches/{id}', [TacheController::class, 'update']);
         Route::delete('taches/{id}', [TacheController::class, 'destroy']);
+        Route::get('taches/show/{id}', [TacheController::class, 'getTaskDetails']);
     });
 
 
